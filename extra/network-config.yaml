@@ -1,0 +1,35 @@
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      dhcp4: false
+      addresses:
+        - 192.168.1.150/24
+      routes:
+        - to: default
+          via: 192.168.1.1
+          metric: 100 # lower priority for eth0
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 8.8.4.4
+      optional: true
+  wifis:
+    wlan0:
+      dhcp4: false
+      addresses:
+        - 192.168.1.151/24
+      routes:
+        - to: default
+          via: 192.168.1.1
+          metric: 200 # high priority for wlan0
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 8.8.4.4
+      optional: true
+      regulatory-domain: ZA  
+      access-points:
+        "YOUR_WIFI_NAME":
+          password: "YOUR_WIFI_PASSWORD"

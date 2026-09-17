@@ -8,5 +8,5 @@ ONCE WORKING
 5. change ssh port
 6. add ufw
 7. add fail2ban lockout failures
-8. auto security updates (cron to audo update)
+<!-- 8. auto security updates (cron to audo update) -->
 9. run 'lynis audit system' try  fix 3 issues
