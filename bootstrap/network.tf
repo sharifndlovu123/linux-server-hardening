@@ -15,17 +15,23 @@ resource "azurerm_virtual_network" "network" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   address_space       = ["10.0.0.0/24"]
-  dns_servers         = ["10.0.0.4", "10.0.0.5"]
-
-  subnet {
-    name             = "subnet1"
-    address_prefixes = ["10.0.1.0/27"]
-    security_group   = azurerm_network_security_group.sg.id
-  }
+  # dns_servers         = ["10.0.0.4", "10.0.0.5"]
 
   tags = {
     environment = "Dummy"
   }
+}
+
+resource "azurerm_subnet" "subnet1" {
+  name                 = "subnet1"
+  resource_group_name  = azurerm_resource_group.rg.name
+  virtual_network_name = azurerm_virtual_network.network.name
+  address_prefixes     = ["10.0.1.0/27"]
+}
+
+resource "azurerm_subnet_network_security_group_association" "association" {
+  subnet_id                 = azurerm_subnet.subnet1.id
+  network_security_group_id = azurerm_network_security_group.sg.id
 }
 
 resource "azurerm_network_security_rule" "specific-inbound" {
@@ -35,19 +41,23 @@ resource "azurerm_network_security_rule" "specific-inbound" {
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "22"
+  source_address_prefix       = var.my_ip
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.sg.name
+  destination_address_prefix  = "*"
 }
 
-resource "azurerm_network_security_rule" "specific-inbound" {
+resource "azurerm_network_security_rule" "random-inbound" {
   name                        = "inbound-allow-ssh-random"
   priority                    = 100
   direction                   = "Inbound"
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "7587"
+  source_address_prefix       = var.my_ip
   resource_group_name         = azurerm_resource_group.rg.name
   network_security_group_name = azurerm_network_security_group.sg.name
+  destination_address_prefix  = "*"
 }
 
 resource "azurerm_network_security_rule" "any-outbound" {

@@ -19,12 +19,12 @@ resource "azurerm_linux_virtual_machine" "vm" {
   location              = azurerm_resource_group.rg.location
   resource_group_name   = azurerm_resource_group.rg.name
   network_interface_ids = [azurerm_network_interface.nic.id]
-  admin_username      = "admin"
-  size               = "Standard_B1s"
+  admin_username        = var.username
+  size                  = "Standard_B1s"
 
   admin_ssh_key {
-    username   = "admin"
-    public_key = file("~/.ssh/id_rsa_az_compute.pub")
+    username   = var.username
+    public_key = file("pub/id_rsa_az_compute.pub")
   }
 
   os_disk {
